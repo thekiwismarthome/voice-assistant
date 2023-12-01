@@ -1,0 +1,286 @@
+substitutions:
+  name: esp32-voice
+  friendly_name: esp32-voice
+  board: esp32dev
+
+
+esphome:
+  name: ${name}
+  friendly_name: ${friendly_name}
+  on_boot:
+    - priority: -100
+      then:
+        - wait_until: api.connected
+        - delay: 1s
+        - if:
+            condition:
+              switch.is_on: use_wake_word
+            then:
+              - voice_assistant.start_continuous:
+    - priority: 900
+      then:
+        lambda: |-
+          id(cpu_speed) = ESP.getCpuFreqMHz();
+
+
+esp32:
+  board: ${board}
+  framework:
+    type: arduino #esp-idf
+    version: recommended
+
+# Enable logging
+logger:
+  level: VERBOSE
+
+# esp32_ble_tracker:
+
+# bluetooth_proxy:
+#   active: true
+
+
+# Enable Home Assistant API
+api:
+
+ota:
+  password: !secret ota_password
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  manual_ip:
+    static_ip: 192.168.0.71
+    gateway: 192.168.0.1
+    subnet: 255.255.255.0
+    dns1: 192.168.0.20
+    dns2: 192.168.0.21
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Esp32-Voice Fallback Hotspot"
+    password: !secret ota_password
+
+captive_portal:
+
+globals:
+  - id: cpu_speed
+    type: int
+    restore_value: no
+    initial_value: '0'
+
+i2s_audio:
+  - id: i2s_in
+    i2s_lrclk_pin: GPIO27 #WS 
+    i2s_bclk_pin: GPIO26 #SCK
+
+microphone:
+  - platform: i2s_audio
+    adc_type: external
+    pdm: false
+    id: mic
+    channel: right
+    bits_per_sample: 32bit
+    i2s_audio_id: i2s_in
+    i2s_din_pin: GPIO13  #SD Pin from the INMP441 Microphone
+
+
+# media_player:
+#   - platform: i2s_audio
+#     name: "esp_speaker"
+#     id: media_player_speaker
+#     i2s_audio_id: i2s_in
+#     dac_type: external
+#     i2s_dout_pin: GPIO25   #  DIN Pin of the MAX98357A Audio Amplifier
+#     mode: mono
+speaker:
+  - platform: i2s_audio
+    id: esp_speaker
+    dac_type: external
+    i2s_dout_pin: GPIO25
+    mode: mono
+
+voice_assistant:
+  microphone: mic
+  id: va
+  noise_suppression_level: 2
+  auto_gain: 31dBFS
+  volume_multiplier: 4.0
+  use_wake_word: false
+  # media_player: media_player_speaker
+  speaker: esp_speaker
+  
+  on_wake_word_detected: 
+    - light.turn_on:
+        id: led_light
+  on_listening: 
+    - light.turn_on:
+        id: led_light
+        effect: "Scan Effect With Custom Values"
+        red: 63%
+        green: 13%
+        blue: 93%
+  
+  on_stt_end:
+    - light.turn_on:
+        id: led_light
+        effect: "None"
+        red: 0%
+        green: 100%
+        blue: 0%
+
+  on_error: 
+    - light.turn_on:
+        id: led_light
+        effect: "None"
+    - if:
+        condition:
+          switch.is_on: use_wake_word
+        then:
+
+          - switch.turn_off: use_wake_word
+          - delay: 1sec 
+          - switch.turn_on: use_wake_word      
+  
+
+
+  on_client_connected:
+    - if:
+        condition:
+          switch.is_on: use_wake_word
+        then:
+          - voice_assistant.start_continuous:
+
+  on_client_disconnected:
+    - if:
+        condition:
+          switch.is_on: use_wake_word
+        then:
+          - voice_assistant.stop:
+ 
+  on_end:
+    - light.turn_off:
+        id: led_light
+
+
+
+binary_sensor:
+  - platform: status
+    name: API Connection
+    id: api_connection
+    filters:
+      - delayed_on: 1s
+    on_press:
+      - if:
+          condition:
+            switch.is_on: use_wake_word
+          then:
+            - voice_assistant.start_continuous:
+    on_release:
+      - if:
+          condition:
+            switch.is_on: use_wake_word
+          then:
+            - voice_assistant.stop:
+
+
+switch:
+  - platform: template
+    name: Use wake word
+    id: use_wake_word
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_ON
+    entity_category: config
+    on_turn_on:
+      - lambda: id(va).set_use_wake_word(true);
+      - if:
+          condition:
+            not:
+              - voice_assistant.is_running
+          then:
+            - voice_assistant.start_continuous
+    
+    on_turn_off:
+      - voice_assistant.stop
+      - lambda: id(va).set_use_wake_word(false);
+
+wled:
+
+light:
+  - platform: neopixelbus
+    id: led_light
+    type: grb
+    pin: GPIO32      # DIN pin of the LED Strip
+    num_leds: 30      # change the Number of LEDS accordign to your LED Strip.
+    name: "Light"
+    variant: ws2813
+    default_transition_length: 0.5s
+      
+    effects:
+      - addressable_scan:
+          name: Scan Effect With Custom Values
+          move_interval: 50ms
+          scan_width: 2
+
+sensor:
+  - platform: template
+    name: "ESP CPU Speed"
+    accuracy_decimals: 0
+    unit_of_measurement: Mhz
+    lambda: |-
+      return (id(cpu_speed));
+    entity_category: "diagnostic"
+    update_interval: 600s
+  - platform: template
+    id: sys_esp_temperature
+    name: ESP Temperature
+    lambda: return temperatureRead();
+    unit_of_measurement: °C
+    device_class: TEMPERATURE
+    update_interval: 45s
+    entity_category: "diagnostic"
+  - platform: uptime
+    name: Uptime
+    id: sys_uptime
+    update_interval: 60s
+  - platform: wifi_signal 
+    name: RSSI
+    id: wifi_signal_db
+    update_interval: 60s
+    entity_category: "diagnostic"
+  - platform: template
+    id: esp_memory
+    icon: mdi:memory
+    name: ESP Free Memory
+    lambda: return heap_caps_get_free_size(MALLOC_CAP_INTERNAL) / 1024;
+    unit_of_measurement: 'kB'
+    state_class: measurement
+    entity_category: "diagnostic"
+    update_interval: 60s
+
+time:
+  - platform: sntp
+    id: time_now
+
+button:
+  - platform: restart
+    icon: mdi:power-cycle
+    name: "ESP Reboot"
+  - platform: factory_reset
+    disabled_by_default: True
+    name: Factory Reset
+    id: factory_reset_al
+
+text_sensor:
+  - platform: wifi_info
+    ip_address:
+      name: IP Address
+    ssid:
+      name: Connected SSID
+    bssid:
+      name: Connected BSSID
+    mac_address:
+      name: MAC Wifi Address
+    scan_results:
+      name: Latest Scan Results
+    dns_address:
+      name: DNS Address
