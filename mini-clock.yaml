@@ -1,3 +1,6 @@
+## Attributions
+# Icons by Flaticon
+
 substitutions:
   name: mini-clock
   friendly_name: Mini Clock
@@ -25,21 +28,14 @@ substitutions:
   spk_blck: GPIO15
   spk_lrc: GPIO16
 
-  # loading_illustration_file: https://github.com/jptrsn/wake-word-voice-assistants/raw/main/casita/loading_240_240.png
-  # idle_illustration_file: https://github.com/jptrsn/wake-word-voice-assistants/raw/main/casita/idle_240_240.png
-  # listening_illustration_file: https://github.com/jptrsn/wake-word-voice-assistants/raw/main/casita/listening_240_240.png
-  # thinking_illustration_file: https://github.com/jptrsn/wake-word-voice-assistants/raw/main/casita/thinking_240_240.png
-  # replying_illustration_file: https://github.com/jptrsn/wake-word-voice-assistants/raw/main/casita/replying_240_240.png
-  # error_illustration_file: https://github.com/jptrsn/wake-word-voice-assistants/raw/main/casita/error_240_240.png
-  # timer_finished_illustration_file: https://github.com/jptrsn/wake-word-voice-assistants/raw/main/casita/timer_finished_240_240.png
+  loading_illustration_file: https://raw.githubusercontent.com/thekiwismarthome/voice-assistant/main/wake-word-voice-assistants/images/loading_240_240.png
+  idle_illustration_file: https://raw.githubusercontent.com/thekiwismarthome/voice-assistant/main/wake-word-voice-assistants/images/idle_240_240.png
+  listening_illustration_file: https://raw.githubusercontent.com/thekiwismarthome/voice-assistant/main/wake-word-voice-assistants/images/listening_240_240.png
+  thinking_illustration_file: https://raw.githubusercontent.com/thekiwismarthome/voice-assistant/main/wake-word-voice-assistants/images/thinking_240_240.png
+  replying_illustration_file: https://raw.githubusercontent.com/thekiwismarthome/voice-assistant/main/wake-word-voice-assistants/images/replying_240_240.png
+  error_illustration_file: https://raw.githubusercontent.com/thekiwismarthome/voice-assistant/main/wake-word-voice-assistants/images/error_240_240.png
+  timer_finished_illustration_file: https://raw.githubusercontent.com/thekiwismarthome/voice-assistant/main/wake-word-voice-assistants/images/timer_finished_240_240.png
 
-  loading_illustration_file: https://github.com/esphome/wake-word-voice-assistants/raw/main/casita/loading_320_240.png
-  idle_illustration_file: https://github.com/esphome/wake-word-voice-assistants/raw/main/casita/idle_320_240.png
-  listening_illustration_file: https://github.com/esphome/wake-word-voice-assistants/raw/main/casita/listening_320_240.png
-  thinking_illustration_file: https://github.com/esphome/wake-word-voice-assistants/raw/main/casita/thinking_320_240.png
-  replying_illustration_file: https://github.com/esphome/wake-word-voice-assistants/raw/main/casita/replying_320_240.png
-  error_illustration_file: https://github.com/esphome/wake-word-voice-assistants/raw/main/casita/error_320_240.png
-  timer_finished_illustration_file: https://github.com/esphome/wake-word-voice-assistants/raw/main/casita/timer_finished_320_240.png
 
   loading_illustration_background_color: "000000"
   idle_illustration_background_color: "000000"
@@ -189,7 +185,7 @@ speaker:
     i2s_dout_pin:   
       number: GPIO7 # DIN Pin of the MAX98357A Audio Amplifier
     channel: stereo
-    buffer_duration: 100ms
+    buffer_duration: 1000ms
 
 media_player:
   - platform: speaker
@@ -197,6 +193,7 @@ media_player:
     id: speaker_media_player
     volume_min: 0.5
     volume_max: 0.8
+    buffer_size: 2000000
     announcement_pipeline:
       speaker: box_speaker
       format: WAV
@@ -586,8 +583,9 @@ light:
 # display
 
 time:
-  - platform: homeassistant
-    id: homeassistant_time
+  - platform: sntp
+    id: ha_time
+    timezone: "Pacific/Auckland"
 
 spi:
   clk_pin: GPIO14 # SCL pin
@@ -623,8 +621,34 @@ font:
     size: 30
     glyphsets:
       - ${font_glyphsets}
+  - file:
+      type: gfonts
+      family: ${font_family}
+      weight: 300
+    id: font_temp_large
+    size: 30
+    glyphsets:
+      - ${font_glyphsets}
+  - file:
+      type: gfonts
+      family: ${font_family}
+      weight: 300
+    id: font_temp_small
+    size: 20
+    glyphsets:
+      - ${font_glyphsets}
+
+sensor:
+  - platform: homeassistant
+    id: current_temperature
+    entity_id: weather.home_2
+    attribute: temperature
 
 text_sensor:
+  - platform: homeassistant
+    id: current_forecast
+    entity_id: weather.home_2
+    #attribute: condition
   - id: text_request
     platform: template
     on_value:
@@ -666,51 +690,87 @@ color:
 # image for background needs to be in /homeassistant/esphome/images/
 
 image:
-  - file: ${error_illustration_file}
-    id: casita_error
-    resize: 240x240
-    type: RGB
-    transparency: alpha_channel
-  - file: ${idle_illustration_file}
-    id: casita_idle
-    resize: 240x240
-    type: RGB
-    transparency: alpha_channel
-  - file: ${listening_illustration_file}
-    id: casita_listening
-    resize: 240x240
-    type: RGB
-    transparency: alpha_channel
-  - file: ${thinking_illustration_file}
-    id: casita_thinking
-    resize: 240x240
-    type: RGB
-    transparency: alpha_channel
-  - file: ${replying_illustration_file}
-    id: casita_replying
-    resize: 240x240
-    type: RGB
-    transparency: alpha_channel
-  - file: ${timer_finished_illustration_file}
-    id: casita_timer_finished
-    resize: 240x240
-    type: RGB
-    transparency: alpha_channel
-  - file: ${loading_illustration_file}
-    id: casita_initializing
-    resize: 240x240
-    type: RGB
-    transparency: alpha_channel
-  - file: https://github.com/esphome/wake-word-voice-assistants/raw/main/error_box_illustrations/error-no-wifi.png
-    id: error_no_wifi
-    resize: 240x240
-    type: RGB
-    transparency: alpha_channel
-  - file: https://github.com/esphome/wake-word-voice-assistants/raw/main/error_box_illustrations/error-no-ha.png
-    id: error_no_ha
-    resize: 240x240
-    type: RGB
-    transparency: alpha_channel
+  rgb565:
+    - file: ${error_illustration_file}
+      id: images_error
+      resize: 200x200
+      transparency: alpha_channel
+    - file: ${idle_illustration_file}
+      id: images_idle
+      resize: 200x200
+      transparency: alpha_channel
+    - file: ${listening_illustration_file}
+      id: images_listening
+      resize: 200x200
+      transparency: alpha_channel
+    - file: ${thinking_illustration_file}
+      id: images_thinking
+      resize: 200x200
+      transparency: alpha_channel
+    - file: ${replying_illustration_file}
+      id: images_replying
+      resize: 200x200
+      transparency: alpha_channel
+    - file: ${timer_finished_illustration_file}
+      id: images_timer_finished
+      resize: 200x200
+      transparency: alpha_channel
+    - file: ${loading_illustration_file}
+      id: images_initializing
+      resize: 200x200
+      transparency: alpha_channel
+    - file: https://github.com/esphome/wake-word-voice-assistants/raw/main/error_box_illustrations/error-no-wifi.png
+      id: error_no_wifi
+      resize: 200x200
+      transparency: alpha_channel
+    - file: https://github.com/esphome/wake-word-voice-assistants/raw/main/error_box_illustrations/error-no-ha.png
+      id: error_no_ha
+      resize: 200x200
+      transparency: alpha_channel
+
+      # Images 🌦️ Forecast Icon
+    - file: "static/images/weather/clear-night.png"
+      id: img_clear_night
+      transparency: alpha_channel
+    - file: "static/images/weather/cloudy.png"
+      id: img_cloudy
+      transparency: alpha_channel
+    - file: "static/images/weather/fog.png"
+      id: img_fog
+      transparency: alpha_channel
+    - file: "static/images/weather/hail.png"
+      id: img_hail
+      transparency: alpha_channel
+    - file: "static/images/weather/lightning.png"
+      id: img_lightning
+      transparency: alpha_channel
+    - file: "static/images/weather/lightning-rainy.png"
+      id: img_lightning_rainy
+      transparency: alpha_channel
+    - file: "static/images/weather/partlycloudy.png"
+      id: img_partlycloudy
+      transparency: alpha_channel
+    - file: "static/images/weather/pouring.png"
+      id: img_pouring
+      transparency: alpha_channel
+    - file: "static/images/weather/rainy.png"
+      id: img_rainy
+      transparency: alpha_channel
+    - file: "static/images/weather/snowy.png"
+      id: img_snowy
+      transparency: alpha_channel
+    - file: "static/images/weather/sunny.png"
+      id: img_sunny
+      transparency: alpha_channel
+    - file: "static/images/weather/windy.png"
+      id: img_windy
+      transparency: alpha_channel
+    - file: "static/images/weather/exceptional.png"
+      id: img_exceptional
+      transparency: alpha_channel
+    - file: "static/images/weather/unknown.png"
+      id: img_unknown
+      transparency: alpha_channel
 
 display:
   - platform: ili9xxx
@@ -722,26 +782,173 @@ display:
     reset_pin: GPIO18 # RST pin
     cs_pin: GPIO13 # CS pin
     dc_pin: GPIO10 # DC pin
-    update_interval: never
+    update_interval: 1s
     dimensions:
         height: 240
         width: 240
     pages:
       - id: idle_page
         lambda: |-
-          it.fill(id(idle_color));
-          it.image((it.get_width() / 2), (it.get_height() / 2), id(casita_idle), ImageAlign::CENTER);
-          id(draw_timer_timeline).execute();
-          id(draw_active_timer_widget).execute();
+          
+          auto black = Color(0, 0, 0);
+          auto red = Color(255, 0, 0);
+          auto green = Color(0, 255, 0);
+          auto blue = Color(0, 0, 255);
+          auto white = Color(255, 255, 255);
+          auto center_x = it.get_width() / 2;
+          auto center_y = it.get_height() / 2;
+          int radius = 100;
+
+          // Get current time
+          auto time = id(ha_time).now();
+
+          // Skip everything if time is not valid
+          if (!time.is_valid()) {
+            it.fill(black);
+            it.printf(center_x, center_y, id(font_response), red, TextAlign::CENTER, "No Time");
+            return;
+          }
+          // ✅ Time is valid — continue as normal
+          int h = time.hour % 12;
+          int m = time.minute;
+          int s = time.second;
+
+          // Clear screen
+          it.fill(black);
+
+          // Clock outline
+          it.circle(center_x, center_y, radius, white);
+
+          // Hour tick marks, excluding 3, 6, 9, 12
+          for (int i = 0; i < 12; i++) {
+            if (i % 3 == 0) continue;  // Skip positions where numerals are shown
+            float angle = i * 30.0 * M_PI / 180.0;
+            int x1 = center_x + cos(angle) * (radius - 10);
+            int y1 = center_y + sin(angle) * (radius - 10);
+            int x2 = center_x + cos(angle) * radius;
+            int y2 = center_y + sin(angle) * radius;
+            it.line(x1, y1, x2, y2, white);
+          }
+
+          // Draw numerals 3, 6, 9, 12
+          it.printf(center_x + radius - 20, center_y - 6, id(font_timer), white, TextAlign::CENTER, "3");
+          it.printf(center_x, center_y + radius - 18, id(font_timer), white, TextAlign::CENTER, "6");
+          it.printf(center_x - radius + 20, center_y - 6, id(font_timer), white, TextAlign::CENTER, "9");
+          it.printf(center_x, center_y - radius + 18, id(font_timer), white, TextAlign::CENTER, "12");
+
+
+          // Hour hand
+          float h_angle = ((h + m / 60.0) * 30.0 - 90.0) * M_PI / 180.0;
+          it.line(center_x, center_y,
+                  center_x + cos(h_angle) * (radius * 0.5),
+                  center_y + sin(h_angle) * (radius * 0.5),
+                  white);
+
+          // Minute hand
+          float m_angle = ((m + s / 60.0) * 6.0 - 90.0) * M_PI / 180.0;
+          it.line(center_x, center_y,
+                  center_x + cos(m_angle) * (radius * 0.75),
+                  center_y + sin(m_angle) * (radius * 0.75),
+                  white);
+
+          // Second hand
+          float s_angle = (s * 6.0 - 90.0) * M_PI / 180.0;
+          it.line(center_x, center_y,
+                  center_x + cos(s_angle) * (radius * 0.9),
+                  center_y + sin(s_angle) * (radius * 0.9),
+                  red);
+
+          // Center dot
+          it.filled_circle(center_x, center_y, 3, red);
+          
+          // ⏰ Day and date
+          std::string day_str = time.strftime("%a");
+          std::string date_str = time.strftime("%d %b");
+
+          it.printf(center_x, center_y + radius - 70, id(font_timer), white, TextAlign::CENTER, "%s", day_str.c_str());
+          it.printf(center_x, center_y + radius - 45, id(font_timer), white, TextAlign::CENTER, "%s", date_str.c_str());
+
+          // 🟡 Temperature (°C) top-left
+          if (!isnan(id(current_temperature).state)) {
+            float temperature = id(current_temperature).state;
+            // Render temperature number (large font)
+            int temp_x = center_x - radius / 2 - 10;
+            int temp_y = center_y - radius / 2;
+            it.printf(temp_x, temp_y, id(font_temp_large), white, TextAlign::LEFT, "%.0f", temperature);
+
+            // Render °C symbol (smaller font, positioned after temperature)
+            int degree_x = temp_x + 40;  // Adjust based on expected text width (e.g., 2-3 digits)
+            int degree_y = temp_y - 1;  // Shift upward for superscript effect
+            it.printf(degree_x, degree_y, id(font_temp_small), white, TextAlign::LEFT, "°C");
+          }
+
+          // 🌦️ Forecast Icon (top-right)
+          std::string condition = id(current_forecast).state;
+
+          int icon_x = center_x + radius /2 + 20;
+          int icon_y = center_y - radius / 2;
+
+          if (condition == "clear-night") {
+            it.image(icon_x, icon_y, id(img_clear_night), ImageAlign::RIGHT);
+          } else if (condition == "cloudy") {
+            it.image(icon_x, icon_y, id(img_cloudy), ImageAlign::RIGHT);
+          } else if (condition == "fog") {
+            it.image(icon_x, icon_y, id(img_fog), ImageAlign::RIGHT);
+          } else if (condition == "hail") {
+            it.image(icon_x, icon_y, id(img_hail), ImageAlign::RIGHT);
+          } else if (condition == "lightning") {
+            it.image(icon_x, icon_y, id(img_lightning), ImageAlign::RIGHT);
+          } else if (condition == "lightning-rainy") {
+            it.image(icon_x, icon_y, id(img_lightning_rainy), ImageAlign::RIGHT);
+          } else if (condition == "partlycloudy" || condition == "partly-cloudy") {
+            it.image(icon_x, icon_y, id(img_partlycloudy), ImageAlign::RIGHT);
+          } else if (condition == "pouring") {
+            it.image(icon_x, icon_y, id(img_pouring), ImageAlign::RIGHT);
+          } else if (condition == "rainy") {
+            it.image(icon_x, icon_y, id(img_rainy), ImageAlign::RIGHT);
+          } else if (condition == "snowy") {
+            it.image(icon_x, icon_y, id(img_snowy), ImageAlign::RIGHT);
+          } else if (condition == "sunny") {
+            it.image(icon_x, icon_y, id(img_sunny), ImageAlign::RIGHT);
+          } else if (condition == "windy" || condition == "windy-variant") {
+            it.image(icon_x, icon_y, id(img_windy), ImageAlign::RIGHT);
+          } else if (condition == "exceptional") {
+            it.image(icon_x, icon_y, id(img_exceptional), ImageAlign::RIGHT);
+          } else {
+            it.image(icon_x, icon_y, id(img_unknown), ImageAlign::RIGHT);
+          }
+
+
+
+
+
+#
+          # // Format: Day name (e.g., Wed)
+          # std::string day_str = time.strftime("%a");
+
+          # // Format: Day Month Year (e.g., 6 Jun 25)
+          # std::string date_str = time.strftime("%-d %b %y");
+
+          # // Print day
+          # it.printf(center_x, center_y + radius - 45, id(font_response), white, TextAlign::CENTER, "%s", day_str.c_str());
+          # // Print date
+          # it.printf(center_x, center_y + radius - 25, id(font_response), white, TextAlign::CENTER, "%s", date_str.c_str());
+
+#
+          # it.fill(id(idle_color));
+          # it.image((it.get_width() / 2), (it.get_height() / 2), id(images_idle), ImageAlign::CENTER);
+          # id(draw_timer_timeline).execute();
+          # id(draw_active_timer_widget).execute();
+
       - id: listening_page
         lambda: |-
           it.fill(id(listening_color));
-          it.image((it.get_width() / 2), (it.get_height() / 2), id(casita_listening), ImageAlign::CENTER);
+          it.image((it.get_width() / 2), (it.get_height() / 2), id(images_listening), ImageAlign::CENTER);
           id(draw_timer_timeline).execute();
       - id: thinking_page
         lambda: |-
           it.fill(id(thinking_color));
-          it.image((it.get_width() / 2), (it.get_height() / 2), id(casita_thinking), ImageAlign::CENTER);
+          it.image((it.get_width() / 2), (it.get_height() / 2), id(images_thinking), ImageAlign::CENTER);
           it.filled_rectangle(20 , 20 , 280 , 30 , Color::WHITE );
           it.rectangle(20 , 20 , 280 , 30 , Color::BLACK );
           it.printf(30, 25, id(font_request), Color::BLACK, "%s", id(text_request).state.c_str());
@@ -749,7 +956,7 @@ display:
       - id: replying_page
         lambda: |-
           it.fill(id(replying_color));
-          it.image((it.get_width() / 2), (it.get_height() / 2), id(casita_replying), ImageAlign::CENTER);
+          it.image((it.get_width() / 2), (it.get_height() / 2), id(images_replying), ImageAlign::CENTER);
           it.filled_rectangle(20 , 20 , 280 , 30 , Color::WHITE );
           it.rectangle(20 , 20 , 280 , 30 , Color::BLACK );
           it.filled_rectangle(20 , 190 , 280 , 30 , Color::WHITE );
@@ -760,11 +967,11 @@ display:
       - id: timer_finished_page
         lambda: |-
           it.fill(id(idle_color));
-          it.image((it.get_width() / 2), (it.get_height() / 2), id(casita_timer_finished), ImageAlign::CENTER);
+          it.image((it.get_width() / 2), (it.get_height() / 2), id(images_timer_finished), ImageAlign::CENTER);
       - id: error_page
         lambda: |-
           it.fill(id(error_color));
-          it.image((it.get_width() / 2), (it.get_height() / 2), id(casita_error), ImageAlign::CENTER);
+          it.image((it.get_width() / 2), (it.get_height() / 2), id(images_error), ImageAlign::CENTER);
       - id: no_ha_page
         lambda: |-
           it.image((it.get_width() / 2), (it.get_height() / 2), id(error_no_ha), ImageAlign::CENTER);
@@ -774,7 +981,7 @@ display:
       - id: initializing_page
         lambda: |-
           it.fill(id(loading_color));
-          it.image((it.get_width() / 2), (it.get_height() / 2), id(casita_initializing), ImageAlign::CENTER);
+          it.image((it.get_width() / 2), (it.get_height() / 2), id(images_initializing), ImageAlign::CENTER);
       - id: muted_page
         lambda: |-
           it.fill(Color::BLACK);
