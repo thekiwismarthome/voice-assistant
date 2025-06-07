@@ -1,0 +1,40 @@
+# Common settings to all my devices
+logger:
+  level: DEBUG
+
+# Enable Home Assistant API
+api:
+  encryption:
+    key: !secret api_encryption
+
+ota:
+  - platform: esphome
+    password: !secret ota_password
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  manual_ip:
+    static_ip: ${static_ip}
+    gateway: 192.168.0.1
+    subnet: 255.255.255.0
+    dns1: 192.168.0.20
+    dns2: 192.168.0.21
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "${name} Hotspot"
+    password: !secret ota_password
+
+# button:
+#   - platform: restart
+#     icon: mdi:power-cycle
+#     name: "${name} Reboot"
+#   - platform: factory_reset
+#     disabled_by_default: True
+#     name: "${name} Factory Reset"
+#     id: factory_reset_al
+# text_sensor:
+#   - platform: wifi_info
+#     ip_address:
+#       name: "${friendly_name} IP Address"
