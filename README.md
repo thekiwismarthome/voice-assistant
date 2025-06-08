@@ -9,6 +9,8 @@ Hardware from AliExpress [here](https://www.aliexpress.com/item/1005008821384965
 
 DeepSeek XiaoZhi AI Voice Chat Robot ESP32-S3 1.28inch LCD Display N16R8 Development Board
 
+- On the bottom it has V5-EN
+
 <img src="/assets/images/mini_clock_weather.jpg" alt="Alt Text" width="150" height="200">
 
 
