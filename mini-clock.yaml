@@ -1,41 +1,44 @@
-## Attributions
-# Icons by Flaticon
+## Resources
+# Weather Icons by https://github.com/qwd/WeatherIcon
+# Original ESPHome code https://community.home-assistant.io/t/low-cost-esp32-voice-platforms/864438/23
+# And yes, I used AI for a alot of it.
+# HA Community [Low cost ESP32 voice platforms https://community.home-assistant.io/t/low-cost-esp32-voice-platforms/864438
+# HA Community [SpotPear “DeepSeek Voice Chat” config https://community.home-assistant.io/t/spotpear-deepseek-voice-chat-config/877927
 
 substitutions:
   name: mini-clock
   friendly_name: Mini Clock
-  board: esp32dev
+  board: esp32-s3-devkitc-1
   area: Office
   device_description: 'DeepSeek XiaoZhi AI Voice Chat Robot ESP32-S3 1.28 inch LCD N16R8 Development Board Astronaut Clock Desktop Ornament'
-  micro_wake_word_model: hey_jarvis  # okay_nabu, alexa, hey_jarvis, hey_mycroft
-
-  mediaplayer: media_player.owntone_server
   current_weather: weather.home_2
   screensaver: 30min
   static_ip: 192.168.0.130
-  # Pin Connections for the SpotPear Esp32 S3 N16R8 board
-  dcpin: GPIO10
-  cspin: GPIO13
-  clpin: GPIO14
-  mopin: GPIO17
-  repin: GPIO18
-  bkpin: GPIO3
-  btnpin: GPIO0
-  mic_ws: GPIO4
-  mic_sclk: GPIO5
-  mic_sd: GPIO6
-  spk_din: GPIO7
-  spk_blck: GPIO15
-  spk_lrc: GPIO16
 
-  loading_illustration_file: https://raw.githubusercontent.com/thekiwismarthome/voice-assistant/main/wake-word-voice-assistants/images/loading_240_240.png
-  idle_illustration_file: https://raw.githubusercontent.com/thekiwismarthome/voice-assistant/main/wake-word-voice-assistants/images/idle_240_240.png
-  listening_illustration_file: https://raw.githubusercontent.com/thekiwismarthome/voice-assistant/main/wake-word-voice-assistants/images/listening_240_240.png
-  thinking_illustration_file: https://raw.githubusercontent.com/thekiwismarthome/voice-assistant/main/wake-word-voice-assistants/images/thinking_240_240.png
-  replying_illustration_file: https://raw.githubusercontent.com/thekiwismarthome/voice-assistant/main/wake-word-voice-assistants/images/replying_240_240.png
-  error_illustration_file: https://raw.githubusercontent.com/thekiwismarthome/voice-assistant/main/wake-word-voice-assistants/images/error_240_240.png
-  timer_finished_illustration_file: https://raw.githubusercontent.com/thekiwismarthome/voice-assistant/main/wake-word-voice-assistants/images/timer_finished_240_240.png
+  loading_illustration_file: https://github.com/esphome/wake-word-voice-assistants/raw/main/casita/loading_320_240.png
+  idle_illustration_file: https://github.com/esphome/wake-word-voice-assistants/raw/main/casita/idle_320_240.png
+  listening_illustration_file: https://github.com/esphome/wake-word-voice-assistants/raw/main/casita/listening_320_240.png
+  thinking_illustration_file: https://github.com/esphome/wake-word-voice-assistants/raw/main/casita/thinking_320_240.png
+  replying_illustration_file: https://github.com/esphome/wake-word-voice-assistants/raw/main/casita/replying_320_240.png
+  error_illustration_file: https://github.com/esphome/wake-word-voice-assistants/raw/main/casita/error_320_240.png
+  timer_finished_illustration_file: https://github.com/esphome/wake-word-voice-assistants/raw/main/casita/timer_finished_320_240.png
+  error_no_wifi_illustration_file: https://github.com/esphome/wake-word-voice-assistants/raw/main/error_box_illustrations/error-no-wifi.png
+  error_no_ha_illustration_file: https://github.com/esphome/wake-word-voice-assistants/raw/main/error_box_illustrations/error-no-ha.png
 
+  weather_img_clear_night: "static/images/weather_real/clear-night.png"
+  weather_img_cloudy: "static/images/weather_real/cloudy.png"
+  weather_img_fog: "static/images/weather_real/fog.png"
+  weather_img_hail: "static/images/weather_real/hail.png"
+  weather_img_lightning: "static/images/weather_real/lightning.png"
+  weather_img_lightning_rainy: "static/images/weather_real/lightning-rainy.png"
+  weather_img_partlycloudy: "static/images/weather_real/partlycloudy.png"
+  weather_img_pouring: "static/images/weather_real/pouring.png"
+  weather_img_rainy: "static/images/weather_real/rainy.png"
+  weather_img_snowy: "static/images/weather_real/snowy.png"
+  weather_img_sunny: "static/images/weather_real/sunny.png"
+  weather_img_windy: "static/images/weather_real/windy.png"
+  weather_img_exceptional: "static/images/weather_real/exceptional.png"
+  weather_img_unknown: "static/images/weather_real/unknown.png"
 
   loading_illustration_background_color: "000000"
   idle_illustration_background_color: "000000"
@@ -63,15 +66,6 @@ substitutions:
   # for Greek use "Noto Sans" for other languages use a compatible font family
   font_family: Figtree
 
-<<: !include common.yaml
-## This adds the following
-#logger:
-#api:
-#ota:
-#wifi
-#ap:
-#button: restart
-
 esphome:
   name: ${name}
   friendly_name: ${friendly_name}
@@ -90,7 +84,7 @@ esphome:
             - script.execute: draw_display
 
 esp32:
-  board: esp32-s3-devkitc-1
+  board: ${board}
   flash_size: 16MB
   cpu_frequency: 240MHz
   framework:
@@ -114,18 +108,41 @@ psram:
   mode: octal
   speed: 80MHz
 
-# # Enable logging
-# logger:
+# Common settings to all my devices
+logger:
+  level: DEBUG
 
-# # Enable Home Assistant API
-# api:
+# Enable Home Assistant API
+api:
+  encryption:
+    key: !secret api_encryption
+  on_client_connected:
+    - script.execute: draw_display
+  on_client_disconnected:
+    - script.execute: draw_display
 
-# # Allow Over-The-Air updates
-# ota:
-# - platform: esphome
+ota:
+  - platform: esphome
+    password: !secret ota_password
 
-# wifi:
-#   ap: {}
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  manual_ip:
+    static_ip: ${static_ip}
+    gateway: 192.168.0.1
+    subnet: 255.255.255.0
+    dns1: 192.168.0.20
+    dns2: 192.168.0.21
+  on_connect:
+    - script.execute: draw_display
+  on_disconnect:
+    - script.execute: draw_display
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "${name} Hotspot"
+    password: !secret ota_password
 
 captive_portal:
 
@@ -133,12 +150,12 @@ button:
   - platform: factory_reset
     id: factory_reset_btn
     internal: true
-#button on the back left
 
 binary_sensor:
   - platform: gpio
     pin:
       number: GPIO0
+      mode: INPUT_PULLUP
       inverted: true
     id: left_top_button
     internal: true
@@ -157,6 +174,56 @@ output:
   - platform: ledc
     pin: GPIO3
     id: backlight_output
+# onboard LED light
+
+light:
+  - platform: monochromatic
+    id: led
+    name: Screen
+    icon: "mdi:television"
+    entity_category: config
+    output: backlight_output
+    restore_mode: RESTORE_DEFAULT_ON
+    default_transition_length: 250ms
+
+  - platform: esp32_rmt_led_strip
+    name: none
+    disabled_by_default: false
+    entity_category: config
+    pin: GPIO48
+    default_transition_length: 0s
+    chipset: WS2812
+    num_leds: 1
+    rgb_order: grb
+    effects:
+      - pulse:
+          name: "Slow Pulse"
+          transition_length: 250ms
+          update_interval: 250ms
+          min_brightness: 50%
+          max_brightness: 100%
+      - pulse:
+          name: "Fast Pulse"
+          transition_length: 100ms
+          update_interval: 100ms
+          min_brightness: 50%
+          max_brightness: 100%
+      - addressable_rainbow:
+      - strobe:
+          name: Police Effect
+          colors:
+            - state: true
+              brightness: 100%
+              red: 100%
+              green: 0%
+              blue: 0%
+              duration: 400ms
+            - state: true
+              brightness: 100%
+              red: 0%
+              green: 0%
+              blue: 100%
+              duration: 400ms
 #speaker and microphone
 
 i2s_audio:
@@ -170,6 +237,7 @@ i2s_audio:
 microphone:
   - platform: i2s_audio
     i2s_audio_id: i2s_mic
+    sample_rate: 16000
     adc_type: external
     i2s_din_pin: GPIO6 #SD
     id: box_mic
@@ -182,9 +250,10 @@ speaker:
     id: box_speaker
     i2s_audio_id: i2s_audio_bus
     dac_type: external
+    sample_rate: 48000
     i2s_dout_pin:   
       number: GPIO7 # DIN Pin of the MAX98357A Audio Amplifier
-    channel: stereo
+    channel: left
     buffer_duration: 1000ms
 
 media_player:
@@ -196,7 +265,7 @@ media_player:
     buffer_size: 2000000
     announcement_pipeline:
       speaker: box_speaker
-      format: WAV
+      format: FLAC #WAV
       sample_rate: 48000
       num_channels: 1  # S3 Box only has one output channel
     files:
@@ -528,60 +597,6 @@ select:
                       then:
                         - micro_wake_word.start
 
-# onboard LED light
-
-light:
-  - platform: monochromatic
-    id: led
-    name: Screen
-    icon: "mdi:television"
-    entity_category: config
-    output: backlight_output
-    restore_mode: RESTORE_DEFAULT_ON
-    default_transition_length: 250ms
-  - platform: esp32_rmt_led_strip
-    # id: led
-    name: none
-    disabled_by_default: false
-    entity_category: config
-    pin: GPIO48
-    default_transition_length: 0s
-    chipset: WS2812
-    num_leds: 1
-    rgb_order: grb
-    effects:
-      - pulse:
-          name: "Slow Pulse"
-          transition_length: 250ms
-          update_interval: 250ms
-          min_brightness: 50%
-          max_brightness: 100%
-      - pulse:
-          name: "Fast Pulse"
-          transition_length: 100ms
-          update_interval: 100ms
-          min_brightness: 50%
-          max_brightness: 100%
-      - addressable_rainbow:
-      - strobe:
-          name: Police Effect
-          colors:
-            - state: true
-              brightness: 100%
-              red: 100%
-              green: 0%
-              blue: 0%
-              duration: 400ms
-            - state: true
-              brightness: 100%
-              red: 0%
-              green: 0%
-              blue: 100%
-              duration: 400ms
-          
-
-# display
-
 time:
   - platform: sntp
     id: ha_time
@@ -719,57 +734,71 @@ image:
       id: images_initializing
       resize: 200x200
       transparency: alpha_channel
-    - file: https://github.com/esphome/wake-word-voice-assistants/raw/main/error_box_illustrations/error-no-wifi.png
+    - file: ${error_no_wifi_illustration_file}
       id: error_no_wifi
       resize: 200x200
       transparency: alpha_channel
-    - file: https://github.com/esphome/wake-word-voice-assistants/raw/main/error_box_illustrations/error-no-ha.png
+    - file: ${error_no_ha_illustration_file}
       id: error_no_ha
       resize: 200x200
       transparency: alpha_channel
 
-      # Images 🌦️ Forecast Icon
-    - file: "static/images/weather/clear-night.png"
+      # Weather Images 🌦️ 
+    - file: ${weather_img_clear_night}
       id: img_clear_night
+      resize: 150x150
       transparency: alpha_channel
-    - file: "static/images/weather/cloudy.png"
+    - file: ${weather_img_cloudy}
       id: img_cloudy
+      resize: 150x150
       transparency: alpha_channel
-    - file: "static/images/weather/fog.png"
+    - file: ${weather_img_fog}
       id: img_fog
+      resize: 150x150
       transparency: alpha_channel
-    - file: "static/images/weather/hail.png"
+    - file: ${weather_img_hail}
       id: img_hail
+      resize: 150x150
       transparency: alpha_channel
-    - file: "static/images/weather/lightning.png"
+    - file: ${weather_img_lightning}
       id: img_lightning
+      resize: 150x150
       transparency: alpha_channel
-    - file: "static/images/weather/lightning-rainy.png"
+    - file: ${weather_img_lightning_rainy}
       id: img_lightning_rainy
+      resize: 150x150
       transparency: alpha_channel
-    - file: "static/images/weather/partlycloudy.png"
+    - file: ${weather_img_partlycloudy}
       id: img_partlycloudy
+      resize: 150x150
       transparency: alpha_channel
-    - file: "static/images/weather/pouring.png"
+    - file: ${weather_img_pouring}
       id: img_pouring
+      resize: 150x150
       transparency: alpha_channel
-    - file: "static/images/weather/rainy.png"
+    - file: ${weather_img_rainy}
       id: img_rainy
+      resize: 150x150
       transparency: alpha_channel
-    - file: "static/images/weather/snowy.png"
+    - file: ${weather_img_snowy}
       id: img_snowy
+      resize: 150x150
       transparency: alpha_channel
-    - file: "static/images/weather/sunny.png"
+    - file: ${weather_img_sunny}
       id: img_sunny
+      resize: 150x150
       transparency: alpha_channel
-    - file: "static/images/weather/windy.png"
+    - file: ${weather_img_windy}
       id: img_windy
+      resize: 150x150
       transparency: alpha_channel
-    - file: "static/images/weather/exceptional.png"
+    - file: ${weather_img_exceptional}
       id: img_exceptional
+      resize: 150x150
       transparency: alpha_channel
-    - file: "static/images/weather/unknown.png"
+    - file: ${weather_img_unknown}
       id: img_unknown
+      resize: 150x150
       transparency: alpha_channel
 
 display:
@@ -816,40 +845,141 @@ display:
           // Clear screen
           it.fill(black);
 
+          // 🟡 Temperature (°C) top-left
+          if (!isnan(id(current_temperature).state)) {
+            float temperature = id(current_temperature).state;
+            // Render temperature number (large font)
+            int temp_x = center_x - radius / 2 - 10;
+            int temp_y = center_y - radius / 2;
+            it.printf(temp_x, temp_y, id(font_temp_large), white, TextAlign::LEFT, "%.0f", temperature);
+
+            // Render °C symbol (smaller font, positioned after temperature)
+            int degree_x = temp_x + 40;  // Adjust based on expected text width (e.g., 2-3 digits)
+            int degree_y = temp_y - 1;  // Shift upward for superscript effect
+            it.printf(degree_x, degree_y, id(font_temp_small), white, TextAlign::LEFT, "°C");
+          }
+
+          // 🌦️ Forecast Icon (top-right)
+          std::string condition = id(current_forecast).state;
+
+          //This is used for CENTRE and Large
+          int icon_x = center_x;
+          int icon_y = center_y;
+
+          //This was used for top right of the screenThis was used for top right of the screen
+          //int icon_x = center_x + radius + radius /2 + 20;
+          //int icon_y = center_y - radius - radius / 2;
+
+          if (condition == "clear-night") {
+            it.image(icon_x, icon_y, id(img_clear_night), ImageAlign::CENTER);
+          } else if (condition == "cloudy") {
+            it.image(icon_x, icon_y, id(img_cloudy), ImageAlign::CENTER);
+          } else if (condition == "fog") {
+            it.image(icon_x, icon_y, id(img_fog), ImageAlign::CENTER);
+          } else if (condition == "hail") {
+            it.image(icon_x, icon_y, id(img_hail), ImageAlign::CENTER);
+          } else if (condition == "lightning") {
+            it.image(icon_x, icon_y, id(img_lightning), ImageAlign::CENTER);
+          } else if (condition == "lightning-rainy") {
+            it.image(icon_x, icon_y, id(img_lightning_rainy), ImageAlign::CENTER);
+          } else if (condition == "partlycloudy" || condition == "partly-cloudy") {
+            it.image(icon_x, icon_y, id(img_partlycloudy), ImageAlign::CENTER);
+          } else if (condition == "pouring") {
+            it.image(icon_x, icon_y, id(img_pouring), ImageAlign::CENTER);
+          } else if (condition == "rainy") {
+            it.image(icon_x, icon_y, id(img_rainy), ImageAlign::CENTER);
+          } else if (condition == "snowy") {
+            it.image(icon_x, icon_y, id(img_snowy), ImageAlign::CENTER);
+          } else if (condition == "sunny") {
+            it.image(icon_x, icon_y, id(img_sunny), ImageAlign::CENTER);
+          } else if (condition == "windy" || condition == "windy-variant") {
+            it.image(icon_x, icon_y, id(img_windy), ImageAlign::CENTER);
+          } else if (condition == "exceptional") {
+            it.image(icon_x, icon_y, id(img_exceptional), ImageAlign::CENTER);
+          } else {
+            it.image(icon_x, icon_y, id(img_unknown), ImageAlign::CENTER);
+          }
+
           // Clock outline
-          it.circle(center_x, center_y, radius, white);
+          //it.circle(center_x, center_y, radius, white);
 
           // Hour tick marks, excluding 3, 6, 9, 12
+          int tick_length = 10; // Example value, adjust as needed
+
           for (int i = 0; i < 12; i++) {
-            if (i % 3 == 0) continue;  // Skip positions where numerals are shown
-            float angle = i * 30.0 * M_PI / 180.0;
-            int x1 = center_x + cos(angle) * (radius - 10);
-            int y1 = center_y + sin(angle) * (radius - 10);
-            int x2 = center_x + cos(angle) * radius;
-            int y2 = center_y + sin(angle) * radius;
-            it.line(x1, y1, x2, y2, white);
+              if (i % 3 == 0) continue;  // Skip positions where numerals are shown
+              float angle = i * 30.0 * M_PI / 180.0;
+              float dx = sin(angle);  // perpendicular unit vector x
+              float dy = -cos(angle); // perpendicular unit vector y
+              int x1 = center_x + cos(angle) * radius;
+              int y1 = center_y + sin(angle) * radius;
+              int x2 = center_x + cos(angle) * (radius + tick_length);
+              int y2 = center_y + sin(angle) * (radius + tick_length);
+              it.line(x1, y1, x2, y2, white);
+
+              int thickness = 3;  // Number of pixels wide
+
+              for (int t = -thickness / 2; t <= thickness / 2; t++) {
+                  it.line(
+                      x1 + dx * t,
+                      y1 + dy * t,
+                      x2 + dx * t,
+                      y2 + dy * t,
+                      white
+                  );
+              }
           }
 
           // Draw numerals 3, 6, 9, 12
-          it.printf(center_x + radius - 20, center_y - 6, id(font_timer), white, TextAlign::CENTER, "3");
-          it.printf(center_x, center_y + radius - 18, id(font_timer), white, TextAlign::CENTER, "6");
-          it.printf(center_x - radius + 20, center_y - 6, id(font_timer), white, TextAlign::CENTER, "9");
-          it.printf(center_x, center_y - radius + 18, id(font_timer), white, TextAlign::CENTER, "12");
+          it.printf(center_x + radius, center_y, id(font_timer), white, TextAlign::CENTER, "3");
+          it.printf(center_x, center_y + radius, id(font_timer), white, TextAlign::CENTER, "6");
+          it.printf(center_x - radius, center_y, id(font_timer), white, TextAlign::CENTER, "9");
+          it.printf(center_x, center_y - radius, id(font_timer), white, TextAlign::CENTER, "12");
 
 
           // Hour hand
           float h_angle = ((h + m / 60.0) * 30.0 - 90.0) * M_PI / 180.0;
-          it.line(center_x, center_y,
-                  center_x + cos(h_angle) * (radius * 0.5),
-                  center_y + sin(h_angle) * (radius * 0.5),
-                  white);
+
+          // Hand length and hour_hand_thickness
+          float hand_length = radius * 0.5;
+          int hour_hand_thickness = 5;  // thickness in pixels
+
+          // Perpendicular vector
+          float hh_dx = sin(h_angle);   // perpendicular X
+          float hh_dy = -cos(h_angle);  // perpendicular Y
+
+          // Draw multiple lines to simulate thickness
+          for (int t = -hour_hand_thickness / 2; t <= hour_hand_thickness / 2; t++) {
+              it.line(
+                  center_x + hh_dx * t,
+                  center_y + hh_dy * t,
+                  center_x + hh_dx * t + cos(h_angle) * hand_length,
+                  center_y + hh_dy * t + sin(h_angle) * hand_length,
+                  white
+              );
+          }
 
           // Minute hand
           float m_angle = ((m + s / 60.0) * 6.0 - 90.0) * M_PI / 180.0;
-          it.line(center_x, center_y,
-                  center_x + cos(m_angle) * (radius * 0.75),
-                  center_y + sin(m_angle) * (radius * 0.75),
-                  white);
+
+          // Minute hand length and minute_hand_thickness
+          float minute_hand_length = radius * 0.75;
+          int minute_hand_thickness = 3;  // Adjust for desired width
+
+          // Perpendicular vector
+          float mh_dx = sin(m_angle);   // perpendicular X
+          float mh_dy = -cos(m_angle);  // perpendicular Y
+
+          // Draw parallel lines for minute_hand_thickness
+          for (int t = -minute_hand_thickness / 2; t <= minute_hand_thickness / 2; t++) {
+              it.line(
+                  center_x + mh_dx * t,
+                  center_y + mh_dy * t,
+                  center_x + mh_dx * t + cos(m_angle) * minute_hand_length,
+                  center_y + mh_dy * t + sin(m_angle) * minute_hand_length,
+                  white
+              );
+          }
 
           // Second hand
           float s_angle = (s * 6.0 - 90.0) * M_PI / 180.0;
@@ -868,77 +998,6 @@ display:
           it.printf(center_x, center_y + radius - 70, id(font_timer), white, TextAlign::CENTER, "%s", day_str.c_str());
           it.printf(center_x, center_y + radius - 45, id(font_timer), white, TextAlign::CENTER, "%s", date_str.c_str());
 
-          // 🟡 Temperature (°C) top-left
-          if (!isnan(id(current_temperature).state)) {
-            float temperature = id(current_temperature).state;
-            // Render temperature number (large font)
-            int temp_x = center_x - radius / 2 - 10;
-            int temp_y = center_y - radius / 2;
-            it.printf(temp_x, temp_y, id(font_temp_large), white, TextAlign::LEFT, "%.0f", temperature);
-
-            // Render °C symbol (smaller font, positioned after temperature)
-            int degree_x = temp_x + 40;  // Adjust based on expected text width (e.g., 2-3 digits)
-            int degree_y = temp_y - 1;  // Shift upward for superscript effect
-            it.printf(degree_x, degree_y, id(font_temp_small), white, TextAlign::LEFT, "°C");
-          }
-
-          // 🌦️ Forecast Icon (top-right)
-          std::string condition = id(current_forecast).state;
-
-          int icon_x = center_x + radius /2 + 20;
-          int icon_y = center_y - radius / 2;
-
-          if (condition == "clear-night") {
-            it.image(icon_x, icon_y, id(img_clear_night), ImageAlign::RIGHT);
-          } else if (condition == "cloudy") {
-            it.image(icon_x, icon_y, id(img_cloudy), ImageAlign::RIGHT);
-          } else if (condition == "fog") {
-            it.image(icon_x, icon_y, id(img_fog), ImageAlign::RIGHT);
-          } else if (condition == "hail") {
-            it.image(icon_x, icon_y, id(img_hail), ImageAlign::RIGHT);
-          } else if (condition == "lightning") {
-            it.image(icon_x, icon_y, id(img_lightning), ImageAlign::RIGHT);
-          } else if (condition == "lightning-rainy") {
-            it.image(icon_x, icon_y, id(img_lightning_rainy), ImageAlign::RIGHT);
-          } else if (condition == "partlycloudy" || condition == "partly-cloudy") {
-            it.image(icon_x, icon_y, id(img_partlycloudy), ImageAlign::RIGHT);
-          } else if (condition == "pouring") {
-            it.image(icon_x, icon_y, id(img_pouring), ImageAlign::RIGHT);
-          } else if (condition == "rainy") {
-            it.image(icon_x, icon_y, id(img_rainy), ImageAlign::RIGHT);
-          } else if (condition == "snowy") {
-            it.image(icon_x, icon_y, id(img_snowy), ImageAlign::RIGHT);
-          } else if (condition == "sunny") {
-            it.image(icon_x, icon_y, id(img_sunny), ImageAlign::RIGHT);
-          } else if (condition == "windy" || condition == "windy-variant") {
-            it.image(icon_x, icon_y, id(img_windy), ImageAlign::RIGHT);
-          } else if (condition == "exceptional") {
-            it.image(icon_x, icon_y, id(img_exceptional), ImageAlign::RIGHT);
-          } else {
-            it.image(icon_x, icon_y, id(img_unknown), ImageAlign::RIGHT);
-          }
-
-
-
-
-
-#
-          # // Format: Day name (e.g., Wed)
-          # std::string day_str = time.strftime("%a");
-
-          # // Format: Day Month Year (e.g., 6 Jun 25)
-          # std::string date_str = time.strftime("%-d %b %y");
-
-          # // Print day
-          # it.printf(center_x, center_y + radius - 45, id(font_response), white, TextAlign::CENTER, "%s", day_str.c_str());
-          # // Print date
-          # it.printf(center_x, center_y + radius - 25, id(font_response), white, TextAlign::CENTER, "%s", date_str.c_str());
-
-#
-          # it.fill(id(idle_color));
-          # it.image((it.get_width() / 2), (it.get_height() / 2), id(images_idle), ImageAlign::CENTER);
-          # id(draw_timer_timeline).execute();
-          # id(draw_active_timer_widget).execute();
 
       - id: listening_page
         lambda: |-
@@ -1097,6 +1156,7 @@ voice_assistant:
         media_player.is_announcing:
     - lambda: id(voice_assistant_phase) = ${voice_assist_timer_finished_phase_id};
     - script.execute: draw_display
+
 globals:
   - id: init_in_progress
     type: bool
