@@ -11,19 +11,22 @@ substitutions:
   board: esp32-s3-devkitc-1
   area: Office
   device_description: 'DeepSeek XiaoZhi AI Voice Chat Robot ESP32-S3 1.28 inch LCD N16R8 Development Board Astronaut Clock Desktop Ornament'
+  
+  imagemodel: "Prime" # options are: Alfred,Casita,EVE,Girl1,Guy1,Guy2,Harley,Robot,Robotgirl,Prime
+  
   current_weather: weather.home_2
   screensaver: 30min
   static_ip: 192.168.0.130
 
-  loading_illustration_file: https://github.com/esphome/wake-word-voice-assistants/raw/main/casita/loading_320_240.png
-  idle_illustration_file: https://github.com/esphome/wake-word-voice-assistants/raw/main/casita/idle_320_240.png
-  listening_illustration_file: https://github.com/esphome/wake-word-voice-assistants/raw/main/casita/listening_320_240.png
-  thinking_illustration_file: https://github.com/esphome/wake-word-voice-assistants/raw/main/casita/thinking_320_240.png
-  replying_illustration_file: https://github.com/esphome/wake-word-voice-assistants/raw/main/casita/replying_320_240.png
-  error_illustration_file: https://github.com/esphome/wake-word-voice-assistants/raw/main/casita/error_320_240.png
-  timer_finished_illustration_file: https://github.com/esphome/wake-word-voice-assistants/raw/main/casita/timer_finished_320_240.png
-  error_no_wifi_illustration_file: https://github.com/esphome/wake-word-voice-assistants/raw/main/error_box_illustrations/error-no-wifi.png
-  error_no_ha_illustration_file: https://github.com/esphome/wake-word-voice-assistants/raw/main/error_box_illustrations/error-no-ha.png
+  loading_illustration_file: https://github.com/thekiwismarthome/voice-assistant/raw/main/assets/images/${imagemodel}/240x240/loading.png
+  idle_illustration_file: https://github.com/thekiwismarthome/voice-assistant/raw/main/assets/images/${imagemodel}/240x240/idle.png
+  listening_illustration_file: https://github.com/thekiwismarthome/voice-assistant/raw/main/assets/images/${imagemodel}/240x240/listening.png
+  thinking_illustration_file: https://github.com/thekiwismarthome/voice-assistant/raw/main/assets/images/${imagemodel}/240x240/thinking.png
+  replying_illustration_file: https://github.com/thekiwismarthome/voice-assistant/raw/main/assets/images/${imagemodel}/240x240/replying.png
+  error_illustration_file: https://github.com/thekiwismarthome/voice-assistant/raw/main/assets/images/${imagemodel}/240x240/error.png
+  timer_finished_illustration_file: https://github.com/thekiwismarthome/voice-assistant/raw/main/assets/images/${imagemodel}/240x240/timer_finished.png
+  error_no_wifi_illustration_file: https://github.com/thekiwismarthome/voice-assistant/raw/main/assets/images/Casita/240x240/error-no-wifi.png
+  error_no_ha_illustration_file: https://github.com/thekiwismarthome/voice-assistant/raw/main/assets/images/Casita/240x240/error-no-ha.png
 
   weather_img_clear_night: "static/images/weather_real/clear-night.png"
   weather_img_cloudy: "static/images/weather_real/cloudy.png"
@@ -57,6 +60,13 @@ substitutions:
   voice_assist_muted_phase_id: "12"
   voice_assist_timer_finished_phase_id: "20"
 
+  # Bermuda BLE Proxy Settings
+  baud_rate: "0"  # If you need serial debugging, override this to 115200 or similar.
+  ble_interval: 320ms
+  ble_window: 300ms
+  proxy_active_scan: "True"  # Allow device to request scan info for device names etc
+  proxy_enable_outbound: "True"  # Allow HA to make outbound connections via this device
+
   # These unique characters have been extracted from every test file of every language available on https://github.com/home-assistant/intents (14 March 2024)
   # However, the Figtree font only contains Latin characters, so there is no point using this... unlessyou change the font configuration accordingly.
   allowed_characters: " !#%'()+,-./0123456789:;<>?@ABCDEFGHIJKLMNOPQRSTUVWYZ[]_abcdefghijklmnopqrstuvwxyz{|}°²³µ¿ÁÂÄÅÉÖÚßàáâãäåæçèéêëìíîðñòóôõöøùúûüýþāăąćčďĐđēėęěğĮįıļľŁłńňőřśšťũūůűųźŻżŽžơưșțΆΈΌΐΑΒΓΔΕΖΗΘΚΜΝΠΡΣΤΥΦάέήίαβγδεζηθικλμνξοπρςστυφχψωϊόύώАБВГДЕЖЗИКЛМНОПРСТУХЦЧШЪЭЮЯабвгдежзийклмнопрстуфхцчшщъыьэюяёђєіїјљњћאבגדהוזחטיכלםמןנסעפץצקרשת،ءآأإئابةتجحخدذرزسشصضطظعغفقكلمنهوىيٹپچڈکگںھہیےংকচতধনফবযরলশষস়ািু্చయలిెొ్ംഅആഇഈഉഎഓകഗങചജഞടഡണതദധനപഫബഭമയരറലളവശസഹാിീുൂെേൈ്ൺൻർൽൾაბგდევზთილმნოპრსტუფქყშჩცძჭხạảấầẩậắặẹẽếềểệỉịọỏốồổỗộớờởợụủứừửữựỳ—、一上不个中为主乾了些亮人任低佔何作供依侧係個側偵充光入全关冇冷几切到制前動區卧厅厨及口另右吊后吗启吸呀咗哪唔問啟嗎嘅嘛器圍在场執場外多大始安定客室家密寵对將小少左已帘常幫幾库度庫廊廚廳开式後恆感態成我戲戶户房所扇手打执把拔换掉控插摄整斯新明是景暗更最會有未本模機檯櫃欄次正氏水沒没洗活派温測源溫漏潮激濕灯為無煙照熱燈燥物狀玄现現瓦用發的盞目着睡私空窗立笛管節簾籬紅線红罐置聚聲脚腦腳臥色节著行衣解設調請謝警设调走路車车运連遊運過道邊部都量鎖锁門閂閉開關门闭除隱離電震霧面音頂題顏颜風风食餅餵가간감갔강개거게겨결경고공과관그금급기길깥꺼껐꼽나난내네놀누는능니다닫담대더데도동됐되된됨둡드든등디때떤뜨라래러렇렌려로료른를리림링마많명몇모무문물뭐바밝방배변보부불블빨뽑사산상색서설성세센션소쇼수스습시신실싱아안않알았애야어얼업없었에여연열옆오온완외왼요운움워원위으은을음의이인일임입있작잠장재전절정제져조족종주줄중줘지직진짐쪽차창천최추출충치침커컴켜켰쿠크키탁탄태탬터텔통트튼티파팬퍼폰표퓨플핑한함해했행혀현화활후휴힘，？"
@@ -70,7 +80,7 @@ esphome:
   name: ${name}
   friendly_name: ${friendly_name}
   min_version: 2025.5.0
-  name_add_mac_suffix: true
+  name_add_mac_suffix: false
   on_boot:
     priority: 600
     then:
@@ -93,16 +103,25 @@ esp32:
       CONFIG_ESP32S3_DEFAULT_CPU_FREQ_240: "y"
       CONFIG_ESP32S3_DATA_CACHE_64KB: "y"
       CONFIG_ESP32S3_DATA_CACHE_LINE_64B: "y"
+      # Bermuda BLE
+      CONFIG_BT_BLE_50_FEATURES_SUPPORTED: "y"
+      CONFIG_ESP_TASK_WDT_TIMEOUT_S: "10"
 
-# esp32_ble_tracker:
-#   scan_parameters:
-# # Adjust timing if the defaults do not work in your environment
-# #    interval: 1100ms
-# #    window: 1100ms
-#     active: true
+# Bermuda BLE
+esp32_ble_tracker:
+  scan_parameters:
+    # Don't auto start BLE scanning, we control it in the `api` section above.
+    continuous: False
+    
+    active: ${proxy_active_scan}  # send scan-request packets to gather more info, like device name for some devices.
 
-# bluetooth_proxy:
-#   active: true
+    interval: ${ble_interval}  # default 320ms - how long to spend on each advert channel
+    window:   ${ble_window}  # default 30ms - how long to actually "listen" in each interval. Reduce this if device is unstable.
+    # If the device cannot keep up or becomes unstable, reduce the "window" setting. This may be
+    # required if your device is controlling other sensors or doing PWM for lights etc.
+
+bluetooth_proxy:
+  active: ${proxy_enable_outbound}  # allows outbound connections from HA to devices.
 
 psram:
   mode: octal
@@ -111,6 +130,8 @@ psram:
 # Common settings to all my devices
 logger:
   level: DEBUG
+  # Bermuda BLE
+  baud_rate: ${baud_rate}
 
 # Enable Home Assistant API
 api:
@@ -118,8 +139,19 @@ api:
     key: !secret api_encryption
   on_client_connected:
     - script.execute: draw_display
+    # Bermuda BLE
+    - esp32_ble_tracker.start_scan:
+        continuous: true
   on_client_disconnected:
     - script.execute: draw_display
+    # Bermuda BLE
+    - if:
+        condition:
+          not:
+            api.connected:
+        then:
+          - esp32_ble_tracker.stop_scan:
+
 
 ota:
   - platform: esphome
@@ -164,7 +196,20 @@ binary_sensor:
           - ON for at least 50ms
           - OFF for at least 50ms
         then:
-          - switch.turn_off: timer_ringing
+          - if:
+              condition:
+                switch.is_on: timer_ringing
+              then:
+                - switch.turn_off: timer_ringing
+              else:
+                - if:
+                    condition:
+                      not:
+                        voice_assistant.is_running:
+                    then:
+                      - voice_assistant.start:                     
+                    else:
+                      - voice_assistant.stop:                   
       - timing:
           - ON for at least 10s
         then:
@@ -241,7 +286,7 @@ microphone:
     adc_type: external
     i2s_din_pin: GPIO6 #SD
     id: box_mic
-    channel: stereo
+    channel: left
     pdm: false
     bits_per_sample: 16bit
 
@@ -253,7 +298,7 @@ speaker:
     sample_rate: 48000
     i2s_dout_pin:   
       number: GPIO7 # DIN Pin of the MAX98357A Audio Amplifier
-    channel: left
+    channel: stereo
     buffer_duration: 1000ms
 
 media_player:
@@ -708,39 +753,39 @@ image:
   rgb565:
     - file: ${error_illustration_file}
       id: images_error
-      resize: 200x200
+      resize: 240x240
       transparency: alpha_channel
     - file: ${idle_illustration_file}
       id: images_idle
-      resize: 200x200
+      resize: 240x240
       transparency: alpha_channel
     - file: ${listening_illustration_file}
       id: images_listening
-      resize: 200x200
+      resize: 240x240
       transparency: alpha_channel
     - file: ${thinking_illustration_file}
       id: images_thinking
-      resize: 200x200
+      resize: 240x240
       transparency: alpha_channel
     - file: ${replying_illustration_file}
       id: images_replying
-      resize: 200x200
+      resize: 240x240
       transparency: alpha_channel
     - file: ${timer_finished_illustration_file}
       id: images_timer_finished
-      resize: 200x200
+      resize: 240x240
       transparency: alpha_channel
     - file: ${loading_illustration_file}
       id: images_initializing
-      resize: 200x200
+      resize: 240x240
       transparency: alpha_channel
     - file: ${error_no_wifi_illustration_file}
       id: error_no_wifi
-      resize: 200x200
+      resize: 240x240
       transparency: alpha_channel
     - file: ${error_no_ha_illustration_file}
       id: error_no_ha
-      resize: 200x200
+      resize: 240x240
       transparency: alpha_channel
 
       # Weather Images 🌦️ 
@@ -808,9 +853,9 @@ display:
     invert_colors: true
     data_rate: 40MHz
     rotation: 0
-    reset_pin: GPIO18 # RST pin
-    cs_pin: GPIO13 # CS pin
-    dc_pin: GPIO10 # DC pin
+    reset_pin: GPIO18
+    cs_pin: GPIO13
+    dc_pin: GPIO10
     update_interval: 1s
     dimensions:
         height: 240
@@ -1178,3 +1223,4 @@ globals:
   - id: global_is_timer
     type: bool
     restore_value: false
+
