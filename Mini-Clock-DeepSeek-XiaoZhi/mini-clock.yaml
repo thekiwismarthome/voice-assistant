@@ -12,7 +12,7 @@ substitutions:
   area: Office
   device_description: 'DeepSeek XiaoZhi AI Voice Chat Robot ESP32-S3 1.28 inch LCD N16R8 Development Board Astronaut Clock Desktop Ornament'
   
-  imagemodel: "Prime" # options are: Alfred,Casita,EVE,Girl1,Guy1,Guy2,Harley,Robot,Robotgirl,Prime
+  imagemodel: "Prime" # options are: Alfred,Astrobot,Casita,Dory,EVE,Eyes,Girl1,GLaDOS,Guy1,Guy2,Harley,Jarvis,Mario,Prime,Robot,Robotgirl
   
   current_weather: weather.home_2
   screensaver: 30min
